@@ -2,12 +2,12 @@ import axios from "axios";
 
 /**
  * Base URL priority:
- * 1. REACT_APP_API_URL (Docker / Production)
+ * 1. REACT_APP_API_URL (Production / Vercel)
  * 2. localhost fallback (Local dev)
  */
 const API = axios.create({
   baseURL:
-    process.env.REACT_APP_API_URL || "http://127.0.0.1:8000/api/",
+    process.env.REACT_APP_API_URL || "https://vishnuv.pythonanywhere.com/api/",
   headers: {
     "Content-Type": "application/json",
   },

@@ -2,19 +2,20 @@ import axios from "axios";
 
 /**
  * Base URL priority:
- * 1. REACT_APP_API_URL (Production / Vercel)
+ * 1. REACT_APP_API_URL (Production: Render backend)
  * 2. localhost fallback (Local dev)
  */
 const API = axios.create({
   baseURL:
-    process.env.REACT_APP_API_URL || "https://vishnuv.pythonanywhere.com/api/",
+    process.env.REACT_APP_API_URL ||
+    "https://asset-management-backend-1-83js.onrender.com/api/",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
 /**
- * 🔐 Attach JWT token automatically
+ * 🔐 Attach JWT token automatically (only if exists)
  */
 API.interceptors.request.use(
   (request) => {

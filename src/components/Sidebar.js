@@ -35,7 +35,7 @@ function Sidebar() {
 
           {role === "ADMIN" && (
             <NavLink to="/employees" className="menu-item">
-              👥 Employees
+              👥 Users
             </NavLink>
           )}
 

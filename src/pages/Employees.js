@@ -62,7 +62,7 @@ function Employees() {
   return (
     <div className="page" style={{ padding: "24px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-        <h2>Employees & Technicians</h2>
+        <h2>Users</h2>
         <button
           className="btn primary"
           style={{ padding: "8px 16px", cursor: "pointer", borderRadius: "6px" }}

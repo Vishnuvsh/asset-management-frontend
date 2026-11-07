@@ -17,9 +17,16 @@ function AssignAsset() {
       asset,
       employee
     })
-      .then(() => alert("Asset assigned successfully"))
+      .then(() => {
+        alert("Asset assigned successfully");
+        setAsset("");
+        setEmployee("");
+        API.get("assets/").then(res => setAssets(res.data));
+      })
       .catch(() => alert("Error assigning asset"));
   };
+
+  const availableAssets = assets.filter((a) => a.status === "AVAILABLE");
 
  return (
   <div className="assign-container">
@@ -30,12 +37,12 @@ function AssignAsset() {
 
     <div className="assign-card">
       <div className="form-group">
-        <label>Asset</label>
+        <label>Asset (Available only)</label>
         <select value={asset} onChange={(e) => setAsset(e.target.value)}>
           <option value="">Select Asset</option>
-          {assets.map((a) => (
+          {availableAssets.map((a) => (
             <option key={a.id} value={a.id}>
-              {a.name}
+              {a.name} (SN: {a.serial_number})
             </option>
           ))}
         </select>

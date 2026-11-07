@@ -31,12 +31,21 @@ API.interceptors.request.use(
 );
 
 /**
- * ❗ Centralized error logging
+ * ❗ Centralized error logging & Auto-logout on 401
  */
 API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response) {
+      if (error.response.status === 401) {
+        localStorage.clear();
+        if (window.location.pathname !== "/login") {
+          alert("Session expired. Please login again.");
+          window.location.href = "/login";
+          return Promise.resolve();
+        }
+      }
+
       console.error("API ERROR:", {
         url: error.config?.url,
         method: error.config?.method,

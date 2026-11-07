@@ -6,10 +6,12 @@ const emptyAsset = {
   type: "",
   serial_number: "",
   status: "AVAILABLE",
+  inventory_item: "",
 };
 
 function Assets() {
   const [assets, setAssets] = useState([]);
+  const [inventoryItems, setInventoryItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [showModal, setShowModal] = useState(false);
@@ -53,6 +55,12 @@ const fetchAssets = () => {
     // Employees cannot open create/edit modal
     if (!isAdmin && (type === "create" || type === "edit")) return;
 
+    if (isAdmin && (type === "create" || type === "edit")) {
+      API.get("inventory/")
+        .then((res) => setInventoryItems(res.data))
+        .catch((err) => console.error("Error fetching inventory:", err));
+    }
+
     setMode(type);
     setCurrentAsset(asset);
     setShowModal(true);
@@ -66,10 +74,25 @@ const fetchAssets = () => {
 
   // Handle input change
   const handleChange = (e) => {
-    setCurrentAsset({
-      ...currentAsset,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    if (name === "inventory_item") {
+      const selected = inventoryItems.find((i) => i.id === Number(value));
+      if (selected) {
+        setCurrentAsset((prev) => ({
+          ...prev,
+          inventory_item: value,
+          name: selected.item_name,
+          type: selected.item_name,
+        }));
+        return;
+      }
+    }
+
+    setCurrentAsset((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   // Normalize payload before sending
@@ -78,6 +101,7 @@ const fetchAssets = () => {
     type: currentAsset.type.trim(),
     serial_number: currentAsset.serial_number.trim(),
     status: currentAsset.status,
+    inventory_item: currentAsset.inventory_item ? Number(currentAsset.inventory_item) : null,
   });
 
   // Create asset
@@ -139,6 +163,14 @@ const fetchAssets = () => {
             <div key={a.id} className="asset-card">
               <h3>{a.name}</h3>
               <p className="type">{a.type}</p>
+              <p style={{ fontSize: "12px", color: "#64748b", margin: "4px 0" }}>
+                SN: <strong style={{ color: "#1e293b" }}>{a.serial_number}</strong>
+              </p>
+              {a.assigned_to && (
+                <p style={{ fontSize: "12px", color: "#2563eb", margin: "2px 0 6px", fontWeight: "500" }}>
+                  👤 {a.assigned_to}
+                </p>
+              )}
               <span className={`status ${a.status}`}>
                 {a.status.toUpperCase()}
               </span>
@@ -176,12 +208,30 @@ const fetchAssets = () => {
             </h3>
 
             <div className="form-group">
+              <label>Inventory Source (Stock auto-decreases)</label>
+              <select
+                name="inventory_item"
+                value={currentAsset.inventory_item || ""}
+                onChange={handleChange}
+                disabled={mode === "view" || !isAdmin}
+              >
+                <option value="">-- None / Custom Asset --</option>
+                {inventoryItems.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.item_name} (Stock: {item.quantity})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
               <label>Name</label>
               <input
                 name="name"
                 value={currentAsset.name || ""}
                 onChange={handleChange}
                 disabled={mode === "view" || !isAdmin}
+                placeholder="e.g. Mouse Dell MS116"
               />
             </div>
 
@@ -192,6 +242,7 @@ const fetchAssets = () => {
                 value={currentAsset.type || ""}
                 onChange={handleChange}
                 disabled={mode === "view" || !isAdmin}
+                placeholder="e.g. Mouse"
               />
             </div>
 
@@ -202,6 +253,7 @@ const fetchAssets = () => {
                 value={currentAsset.serial_number || ""}
                 onChange={handleChange}
                 disabled={mode === "view" || !isAdmin}
+                placeholder="e.g. SN-987654"
               />
             </div>
 

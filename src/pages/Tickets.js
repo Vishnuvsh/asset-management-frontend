@@ -16,6 +16,7 @@ function Tickets() {
     if (role === "EMPLOYEE") {
       API.get("assets/").then((res) => setAssets(res.data));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadTickets = () => {

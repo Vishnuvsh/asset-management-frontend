@@ -19,16 +19,15 @@ function Assets() {
   const [currentAsset, setCurrentAsset] = useState(emptyAsset);
 
   // ⚡ User & role logic
-  const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     // Load user from localStorage
     const storedUser = JSON.parse(localStorage.getItem("user"));
-    setUser(storedUser);
     setIsAdmin(storedUser?.role === "ADMIN");
 
     fetchAssets();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Fetch assets

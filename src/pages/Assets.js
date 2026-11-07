@@ -106,6 +106,14 @@ const fetchAssets = () => {
   // Create asset
   const createAsset = () => {
     if (!isAdmin) return; // Employee cannot create
+    if (!currentAsset.inventory_item) {
+      alert("Please select an item from Inventory!");
+      return;
+    }
+    if (!currentAsset.serial_number.trim()) {
+      alert("Please enter a Serial Number!");
+      return;
+    }
     API.post("assets/", buildPayload())
       .then(() => {
         fetchAssets();
@@ -207,17 +215,18 @@ const fetchAssets = () => {
             </h3>
 
             <div className="form-group">
-              <label>Inventory Source (Stock auto-decreases)</label>
+              <label>Inventory Source *</label>
               <select
                 name="inventory_item"
                 value={currentAsset.inventory_item || ""}
                 onChange={handleChange}
                 disabled={mode === "view" || !isAdmin}
+                required
               >
-                <option value="">-- None / Custom Asset --</option>
+                <option value="">-- Select from Inventory --</option>
                 {inventoryItems.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.item_name} (Stock: {item.quantity})
+                  <option key={item.id} value={item.id} disabled={item.quantity <= 0}>
+                    {item.item_name} (Stock: {item.quantity}) {item.quantity <= 0 ? "- Out of Stock" : ""}
                   </option>
                 ))}
               </select>

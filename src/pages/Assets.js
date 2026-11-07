@@ -82,7 +82,7 @@ const fetchAssets = () => {
           ...prev,
           inventory_item: value,
           name: selected.item_name,
-          type: selected.item_name,
+          type: selected.category || selected.item_name,
         }));
         return;
       }
@@ -226,7 +226,7 @@ const fetchAssets = () => {
                 <option value="">-- Select from Inventory --</option>
                 {inventoryItems.map((item) => (
                   <option key={item.id} value={item.id} disabled={item.quantity <= 0}>
-                    {item.item_name} (Stock: {item.quantity}) {item.quantity <= 0 ? "- Out of Stock" : ""}
+                    {item.category ? `[${item.category}] ` : ""}{item.item_name} (Stock: {item.quantity}) {item.quantity <= 0 ? "- Out of Stock" : ""}
                   </option>
                 ))}
               </select>

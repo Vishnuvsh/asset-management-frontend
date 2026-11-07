@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import API from "../api";
 
 const emptyItem = {
+  category: "",
   item_name: "",
   quantity: "",
   threshold: "",
@@ -48,6 +49,7 @@ function Inventory() {
   };
 
   const buildPayload = () => ({
+    category: currentItem.category ? currentItem.category.trim() : "General",
     item_name: currentItem.item_name.trim(),
     quantity: Number(currentItem.quantity),
     threshold: Number(currentItem.threshold),
@@ -99,7 +101,12 @@ function Inventory() {
 
             return (
               <div key={i.id} className="inventory-card">
-                <h3>{i.item_name}</h3>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
+                  <h3 style={{ margin: 0 }}>{i.item_name}</h3>
+                  <span style={{ fontSize: "11px", fontWeight: "600", background: "#eff6ff", color: "#1d4ed8", padding: "2px 8px", borderRadius: "10px", border: "1px solid #bfdbfe", textTransform: "uppercase" }}>
+                    {i.category || "General"}
+                  </span>
+                </div>
 
                 <p>Quantity: {i.quantity}</p>
                 <p>Threshold: {i.threshold}</p>
@@ -130,8 +137,27 @@ function Inventory() {
             <h3>{mode === "create" ? "Add Item" : "Edit Item"}</h3>
 
             <input
+              list="inventory-categories"
+              name="category"
+              placeholder="Category / Type (e.g. Keyboard, Laptop, Mouse)"
+              value={currentItem.category || ""}
+              onChange={handleChange}
+            />
+            <datalist id="inventory-categories">
+              <option value="Laptop" />
+              <option value="Desktop" />
+              <option value="Keyboard" />
+              <option value="Mouse" />
+              <option value="Monitor" />
+              <option value="Headphones" />
+              <option value="Printer" />
+              <option value="Cables" />
+              <option value="Accessories" />
+            </datalist>
+
+            <input
               name="item_name"
-              placeholder="Item name"
+              placeholder="Item name / Model (e.g. Dell KB216 Wired)"
               value={currentItem.item_name}
               onChange={handleChange}
             />

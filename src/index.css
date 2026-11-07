@@ -770,6 +770,16 @@ th {
   color: #b91c1c;
 }
 
+.status.in_progress {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.status.resolved {
+  background: #dcfce7;
+  color: #15803d;
+}
+
 /* Body */
 .card-body {
   margin-top: 16px;
